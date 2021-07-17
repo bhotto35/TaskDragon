@@ -2,8 +2,6 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, StyleSheet, Image, TouchableOpacity, Button, Text} from 'react-native';
 import IconF from 'react-native-vector-icons/Fontisto';
-//import FoodForm from './src/foodForm';
-//import FoodList from './src/foodList';
 import TodoForm from './src/todoForm';
 import TodoList from './src/todoList';
 import TodoEdit from './src/todoEdit';
@@ -11,37 +9,6 @@ import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
-/*export default AppStack = () =>
-  <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="FoodForm"
-        component={FoodForm}
-        options={{
-          title: 'Redux App 01',
-          headerTintColor: 'blue',
-          headerStyle: {
-            backgroundColor: 'black'
-          }
-        }}
-      />
-      <Stack.Screen
-        name="FoodList"
-        component={FoodList}
-        options={{
-          headerTintColor: 'blue',
-          headerStyle: {
-            backgroundColor: 'black'
-          }
-        }}
-      />
-    </Stack.Navigator>
-      </NavigationContainer>*/
-    {/*<View>
-    <Text>
-      This should work
-    </Text>
-  </View> */}
   export default AppStack = ({navigation}) =>
   <NavigationContainer>
     <Stack.Navigator>
