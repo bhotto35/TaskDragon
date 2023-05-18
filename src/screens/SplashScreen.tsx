@@ -5,14 +5,14 @@ import {
   //Text,
   Image
 } from 'react-native'
-import * as Animatable from 'react-native-animatable';
+// import * as Animatable from 'react-native-animatable';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 const Splash = ()=>{
     return(
         <View style={style.container}>
             <Image
                 style={style.image}
-                source={require('./assets/taskdragon_icon.png')}
+                source={require('../assets/taskdragon_icon.png')}
             />
         </View>
     );

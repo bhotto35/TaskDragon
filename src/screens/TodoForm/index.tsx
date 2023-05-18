@@ -5,27 +5,29 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Checkbox } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
-import { addTodo } from './actions/todo';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { addTodo } from '../../actions/todo';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { dateToString, getDeadline } from '../../utils/auxilliary';
 
 function currDate()
 {
   var d=new Date();
-  var date= [parseInt(d.getFullYear())];
-  date.push(parseInt(d.getMonth()));
-  date.push(parseInt(d.getDate()));
-  date.push(parseInt(d.getHours()));
-  date.push(parseInt(d.getMinutes()));
-  date.push(parseInt(d.getSeconds()));
+  var date= [parseInt(d.getFullYear().toString())];
+  date.push(parseInt(d.getMonth().toString()));
+  date.push(parseInt(d.getDate().toString()));
+  date.push(parseInt(d.getHours().toString()));
+  date.push(parseInt(d.getMinutes().toString()));
+  date.push(parseInt(d.getSeconds().toString()));
   return date;
 }
 
-const charCountColor=(x)=>{
+const charCountColor=(x:number)=>{
   if(x<40)
   return 'white';
   else if(x<50)
@@ -37,7 +39,7 @@ const charCountColor=(x)=>{
 }
 
 
-const TodoForm = ({ navigation,route }) => {
+const TodoForm = ({ navigation,route }:any) => {
 
   const [todo, setTodo] = useState('');
   const [showDate, setShowDate] = useState(false);
@@ -49,7 +51,7 @@ const TodoForm = ({ navigation,route }) => {
   const dispatch = useDispatch();
 
 
-  const onChangeDate = (event, value) => {
+  const onChangeDate = (event:DateTimePickerEvent, value:Date | undefined) => {
     const currentDate = value;// || date;
     //setShow(Platform.OS === 'ios');
     setShowDate(false);
@@ -57,7 +59,7 @@ const TodoForm = ({ navigation,route }) => {
       setDeadDate(currentDate);
     //console.log("Deadline Date: "+deadDate);
   };
-  const onChangeTime = (event, value) => {
+  const onChangeTime = (event:DateTimePickerEvent, value:Date | undefined) => {
     const currentTime = value;//selectedTime;
     //setShow(Platform.OS === 'ios');
     setShowTime(false);
@@ -96,21 +98,11 @@ const TodoForm = ({ navigation,route }) => {
     );
   }
 
-  const getDeadline=(deadTime,deadDate)=>{
-    var d = [deadDate.getFullYear()];
-    d.push(deadDate.getMonth()+1);
-    d.push(deadDate.getDate());
-    d.push(deadTime.getHours());
-    d.push(deadTime.getMinutes());
-    d.push(0);
-    return d;
-  }
-
-  const submitTodo = (todo,hasDeadline, deadTime, deadDate) => {
-    var deadline = []
+  const submitTodo = (todo:string,hasDeadline:boolean, deadTime:Date, deadDate:Date) => {
+    let deadline:string = dateToString(new Date())
     if(hasDeadline)
     {
-      deadline = getDeadline(deadTime,deadDate);
+      deadline = dateToString(getDeadline(deadTime,deadDate));
       //console.log("Time: "+deadTime);
       //console.log("Date: "+deadDate);
       //console.log("Deadline: "+deadline);
@@ -123,16 +115,16 @@ const TodoForm = ({ navigation,route }) => {
     }
     else if(todo.length>50)
     {
-      alert('Try less than 50 characters.');
+      Alert.alert('Try less than 50 characters.');
     }
     else
-      alert('Nothing was entered!');
+      Alert.alert('Nothing was entered!');
   }
   return (
     <View style={styles.container}>
       <Image
         style={styles.image}
-        source={require('./assets/logo.png')}
+        source={require('../../assets/logo.png')}
       />
       <Text style={styles.title}>TaskDragon</Text>
       <View style={{width:'90%',display:'flex',flexDirection:'row'}}>

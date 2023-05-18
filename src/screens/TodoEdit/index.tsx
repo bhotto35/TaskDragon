@@ -1,32 +1,21 @@
 import React, { useState } from 'react';
-import { RadioButton } from 'react-native-paper';
 import {
   StyleSheet,
   View,
   TextInput,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Checkbox } from 'react-native-paper';
-import { useDispatch } from 'react-redux';
-import { updateTodo } from './actions/todo';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateTodo } from '../../actions/todo';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { dateToString, getDeadline } from '../../utils/auxilliary';
 
-function currDate()
-{
-  var d=new Date();
-  var date= [parseInt(d.getFullYear())];
-  date.push(parseInt(d.getMonth()));
-  date.push(parseInt(d.getDate()));
-  date.push(parseInt(d.getHours()));
-  date.push(parseInt(d.getMinutes()));
-  date.push(parseInt(d.getSeconds()));
-  return date;
-}
-
-const charCountColor=(x)=>{
+const charCountColor=(x:number)=>{
   if(x<40)
   return 'white';
   else if(x<50)
@@ -38,34 +27,28 @@ const charCountColor=(x)=>{
 }
 
 
-const TodoEdit = ({ navigation,route }) => {
+const TodoEdit = ({ navigation,route }:any) => {
 
-  const [todo, setTodo] = useState(route.params.name);
+  const todos = useSelector((state:any) => state.todoReducer.todoList);
+  const [todo, setTodo] = useState(todos[route.params.index].name);
   const [showDate, setShowDate] = useState(false);
   const [showTime, setShowTime] = useState(false);
-  const [hasDeadline, setHasDeadline] = useState(route.params.hasDeadline?true:false);
-  const [deadDate,setDeadDate] = useState(
-      route.params.hasDeadline?
-      new Date(route.params.deadline[0],route.params.deadline[1]-1,route.params.deadline[2])
-      :
+  const [hasDeadline, setHasDeadline] = useState(todos[route.params.index].hasDeadline?true:false);
+  const [deadDate,setDeadDate] = useState<Date>(
+      todos[route.params.index].hasDeadline?
+      new Date(todos[route.params.index].deadline):
       new Date()
-    );
-  const [deadTime, setDeadTime] = useState(
-      route.params.hasDeadline?
-      new Date(route.params.deadline[0],
-        route.params.deadline[1]-1,
-        route.params.deadline[2],
-        route.params.deadline[3],
-        route.params.deadline[4],
-        route.params.deadline[5],)
-      :
-      new Date()
-    );
+  );
+  const [deadTime, setDeadTime] = useState<Date>(
+    todos[route.params.index].hasDeadline?
+    new Date(todos[route.params.index].deadline):
+    new Date()
+  );
 
   const dispatch = useDispatch();
 
 
-  const onChangeDate = (event, value) => {
+  const onChangeDate = (event:DateTimePickerEvent, value?:Date) => {
     const currentDate = value;// || date;
     //setShow(Platform.OS === 'ios');
     setShowDate(false);
@@ -73,7 +56,7 @@ const TodoEdit = ({ navigation,route }) => {
       setDeadDate(currentDate);
     //console.log("Deadline Date: "+deadDate);
   };
-  const onChangeTime = (event, value) => {
+  const onChangeTime = (event:DateTimePickerEvent, value?:Date) => {
     const currentTime = value;//selectedTime;
     //setShow(Platform.OS === 'ios');
     setShowTime(false);
@@ -112,21 +95,11 @@ const TodoEdit = ({ navigation,route }) => {
     );
   }
 
-  const getDeadline=(deadTime,deadDate)=>{
-    var d = [deadDate.getFullYear()];
-    d.push(deadDate.getMonth()+1);
-    d.push(deadDate.getDate());
-    d.push(deadTime.getHours());
-    d.push(deadTime.getMinutes());
-    d.push(0);
-    return d;
-  }
-
-  const updateTodoFunc = (index,todo,hasDeadline, deadTime, deadDate) => {
-    var deadline = []
+  const updateTodoFunc = (index:number,todo:string,hasDeadline:boolean, deadTime:Date, deadDate:Date) => {
+    var deadline:string = dateToString(new Date())
     if(hasDeadline)
     {
-      deadline = getDeadline(deadTime,deadDate);
+      deadline = dateToString(getDeadline(deadTime,deadDate));
     }
     if(todo.length>0&&todo.length<=50)
     {
@@ -136,16 +109,16 @@ const TodoEdit = ({ navigation,route }) => {
     }
     else if(todo.length>50)
     {
-      alert('Try less than 50 characters.');
+      Alert.alert('Try less than 50 characters.');
     }
     else
-      alert('Nothing was entered!');
+      Alert.alert('Nothing was entered!');
   }
   return (
     <View style={styles.container}>
       <Image
         style={styles.image}
-        source={require('./assets/logo.png')}
+        source={require('../../assets/logo.png')}
       />
       <Text style={styles.title}>TaskDragon</Text>
       <View style={{width:'90%',display:'flex',flexDirection:'row'}}>
@@ -157,7 +130,7 @@ const TodoEdit = ({ navigation,route }) => {
           maxLength={50}
         />{
           todo.length>0?<Text style={[styles.todoCharCount,{color:charCountColor(todo.length)}]}>
-            {30-todo.length}
+            {50-todo.length}
           </Text>:null
         }
       </View>

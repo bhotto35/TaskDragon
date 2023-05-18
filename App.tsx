@@ -1,15 +1,22 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ */
+
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, StyleSheet, Image, TouchableOpacity, Button, Text} from 'react-native';
 import IconF from 'react-native-vector-icons/Fontisto';
-import TodoForm from './src/todoForm';
-import TodoList from './src/todoList';
-import TodoEdit from './src/todoEdit';
+import TodoForm from './src/screens/TodoForm';
+import TodoList from './src/screens/TodoList';
+import TodoEdit from './src/screens/TodoEdit';
 import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
-  export default AppStack = ({navigation}) =>
+const AppStack = ({navigation}:any) =>
   <NavigationContainer>
     <Stack.Navigator>
       <Stack.Screen
@@ -26,8 +33,8 @@ const Stack = createStackNavigator();
             source={require('./src/assets/logo.png')}
           />),
           headerRight: () => (
-            <TouchableOpacity onPress={()=> navigation.navigate('TodoForm')} style={{padding:20,borderRadius:55,backgroundColor:'rgb(184,0,283)'}}>
-              <IconF name="plus-a" color="white" size={25}/>
+            <TouchableOpacity onPress={()=> navigation.navigate('TodoForm')} style={{borderRadius:55,backgroundColor:'rgb(184,0,283)'}}>
+              <IconF name="plus-a" color="white" size={18} style={{padding:15}} />
             </TouchableOpacity>
           ),
         })}
@@ -66,3 +73,5 @@ const Stack = createStackNavigator();
       borderRadius: 25,
     }
   })
+
+export default AppStack
